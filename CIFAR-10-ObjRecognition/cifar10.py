@@ -173,69 +173,69 @@ def train(net, train_data, valid_data, num_epochs, batch_size, lr, wd, lr_period
         prev_time = cur_time
         print(epoch_str + time_str + ', lr ' + str(trainer.learning_rate))
 
-train_dir = 'train'
-test_dir = 'test'
-batch_size = 128
-data_dir = '../data/kaggle_cifar10'
-label_file = 'trainLabels.csv'
-input_dir = 'train_valid_test'
-valid_ratio = 0.1
+# train_dir = 'train'
+# test_dir = 'test'
+# batch_size = 128
+# data_dir = '../data/kaggle_cifar10'
+# label_file = 'trainLabels.csv'
+# input_dir = 'train_valid_test'
+# valid_ratio = 0.1
 # reorg_cifar10_data(data_dir, label_file, train_dir, test_dir, input_dir, valid_ratio)
-
-transform_train = transforms.Compose([
-    # transforms.CenterCrop(32)
-    # transforms.RandomFlipTopBottom(),
-    # transforms.RandomColorJitter(brightness=0.0, contrast=0.0, saturation=0.0, hue=0.0),
-    # transforms.RandomLighting(0.0),
-    # transforms.Cast('float32'),
-    # transforms.Resize(32),
-
-    # 随机按照scale和ratio裁剪，并放缩为32x32的正方形
-    transforms.RandomResizedCrop(32, scale=(0.08, 1.0), ratio=(3.0 / 4.0, 4.0 / 3.0)),
-    # 随机左右翻转图片
-    transforms.RandomFlipLeftRight(),
-    # 将图片像素值缩小到(0,1)内，并将数据格式从"高*宽*通道"改为"通道*高*宽"
-    transforms.ToTensor(),
-    # 对图片的每个通道做标准化
-    transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010])
-])
-
-# 测试时，无需对图像做标准化以外的增强数据处理。
-transform_test = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010])
-])
-
-input_str = data_dir + '/' + input_dir + '/'
-
-# 读取原始图像文件。flag=1说明输入图像有三个通道（彩色）。
-train_ds = vision.ImageFolderDataset(input_str + 'train', flag=1)
-valid_ds = vision.ImageFolderDataset(input_str + 'valid', flag=1)
-train_valid_ds = vision.ImageFolderDataset(input_str + 'train_valid', flag=1)
-test_ds = vision.ImageFolderDataset(input_str + 'test', flag=1)
-
-loader = gluon.data.DataLoader
-train_data = loader(train_ds.transform_first(transform_train),
-                    batch_size, shuffle=True, last_batch='keep')
-valid_data = loader(valid_ds.transform_first(transform_test),
-                    batch_size, shuffle=True, last_batch='keep')
-train_valid_data = loader(train_valid_ds.transform_first(transform_train),
-                          batch_size, shuffle=True, last_batch='keep')
-test_data = loader(test_ds.transform_first(transform_test),
-                   batch_size, shuffle=False, last_batch='keep')
 #
-# # 交叉熵损失函数。
-# softmax_cross_entropy = gluon.loss.SoftmaxCrossEntropyLoss()
-
-ctx = utils.try_gpu()
-num_epochs = 2
-learning_rate = 0.1
-weight_decay = 5e-4
-lr_period = 80
-lr_decay = 0.1
-net = get_net(ctx)
-net.hybridize()
-
-train(net=net, train_data=train_data, valid_data=valid_data,
-      num_epochs=num_epochs, batch_size=batch_size, lr=learning_rate,
-      wd=weight_decay, lr_period=lr_period, lr_decay=lr_decay, ctx=ctx)
+# transform_train = transforms.Compose([
+#     # transforms.CenterCrop(32)
+#     # transforms.RandomFlipTopBottom(),
+#     # transforms.RandomColorJitter(brightness=0.0, contrast=0.0, saturation=0.0, hue=0.0),
+#     # transforms.RandomLighting(0.0),
+#     # transforms.Cast('float32'),
+#     # transforms.Resize(32),
+#
+#     # 随机按照scale和ratio裁剪，并放缩为32x32的正方形
+#     transforms.RandomResizedCrop(32, scale=(0.08, 1.0), ratio=(3.0 / 4.0, 4.0 / 3.0)),
+#     # 随机左右翻转图片
+#     transforms.RandomFlipLeftRight(),
+#     # 将图片像素值缩小到(0,1)内，并将数据格式从"高*宽*通道"改为"通道*高*宽"
+#     transforms.ToTensor(),
+#     # 对图片的每个通道做标准化
+#     transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010])
+# ])
+#
+# # 测试时，无需对图像做标准化以外的增强数据处理。
+# transform_test = transforms.Compose([
+#     transforms.ToTensor(),
+#     transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010])
+# ])
+#
+# input_str = data_dir + '/' + input_dir + '/'
+#
+# # 读取原始图像文件。flag=1说明输入图像有三个通道（彩色）。
+# train_ds = vision.ImageFolderDataset(input_str + 'train', flag=1)
+# valid_ds = vision.ImageFolderDataset(input_str + 'valid', flag=1)
+# train_valid_ds = vision.ImageFolderDataset(input_str + 'train_valid', flag=1)
+# test_ds = vision.ImageFolderDataset(input_str + 'test', flag=1)
+#
+# loader = gluon.data.DataLoader
+# train_data = loader(train_ds.transform_first(transform_train),
+#                     batch_size, shuffle=True, last_batch='keep')
+# valid_data = loader(valid_ds.transform_first(transform_test),
+#                     batch_size, shuffle=True, last_batch='keep')
+# train_valid_data = loader(train_valid_ds.transform_first(transform_train),
+#                           batch_size, shuffle=True, last_batch='keep')
+# test_data = loader(test_ds.transform_first(transform_test),
+#                    batch_size, shuffle=False, last_batch='keep')
+# #
+# # # 交叉熵损失函数。
+# # softmax_cross_entropy = gluon.loss.SoftmaxCrossEntropyLoss()
+#
+# ctx = utils.try_gpu()
+# num_epochs = 2
+# learning_rate = 0.1
+# weight_decay = 5e-4
+# lr_period = 80
+# lr_decay = 0.1
+# net = get_net(ctx)
+# net.hybridize()
+#
+# train(net=net, train_data=train_data, valid_data=valid_data,
+#       num_epochs=num_epochs, batch_size=batch_size, lr=learning_rate,
+#       wd=weight_decay, lr_period=lr_period, lr_decay=lr_decay, ctx=ctx)
