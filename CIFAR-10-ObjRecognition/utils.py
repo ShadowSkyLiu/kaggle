@@ -4,21 +4,37 @@ def accuracy(output, label):
     return nd.mean(output.argmax(axis=1) == label).asscalar()
 
 
+# def evaluate_accuracy(data_iter, net, ctx=[mx.cpu()]):
+#     if isinstance(ctx, mx.Context):
+#         ctx = [ctx]
+#     acc = nd.array([0])
+#     n = 0.
+#     if isinstance(data_iter, mx.io.MXDataIter):
+#         data_iter.reset()
+#     for batch in data_iter:
+#         data, label, batch_size = _get_batch(batch, ctx)
+#         for X, y in zip(data, label):
+#             y = y.astype('float32')
+#             acc += nd.sum(net(X).argmax(axis=1) == y).copyto(mx.cpu())
+#             n += y.size
+#         acc.wait_to_read()  # don't push too many operators into backend
+#     print('data_iter size = ' + n)
+#     return acc.asscalar() / n
+
 def evaluate_accuracy(data_iter, net, ctx=[mx.cpu()]):
     if isinstance(ctx, mx.Context):
         ctx = [ctx]
     acc = nd.array([0])
-    n = 0.
+    n = 0
     if isinstance(data_iter, mx.io.MXDataIter):
         data_iter.reset()
     for batch in data_iter:
-        data, label, batch_size = _get_batch(batch, ctx)
-        for X, y in zip(data, label):
+        features, labels, batch_size = _get_batch(batch, ctx)
+        for X, y in zip(features, labels):
             y = y.astype('float32')
-            acc += nd.sum(net(X).argmax(axis=1) == y).copyto(ctx)
+            acc += (net(X).argmax(axis=1)==y).sum().copyto(mx.cpu())
             n += y.size
-        acc.wait_to_read()  # don't push too many operators into backend
-    print('data_iter size = ' + n)
+        acc.wait_to_read() 
     return acc.asscalar() / n
 
 # def evaluate_accuracy(data_iterator, net, ctx=[mx.cpu()]):

@@ -18,13 +18,12 @@ def reorg_cifar10_data(data_dir, label_file, train_dir, test_dir, input_dir, val
         lines = f.readlines()[1:]
         tokens = [line.rstrip().split(',') for line in lines]
         idx_label = dict((int(idx), label) for idx, label in tokens)
-    labels = idx_label.values()
+    labels = set(idx_label.values())
 
     num_train = len(os.listdir(os.path.join(data_dir, train_dir)))
     num_train_tuning = int(num_train * (1 - valid_ratio))
     assert 0 < num_train_tuning < num_train
     num_train_tuning_per_label = num_train_tuning // len(labels)
-
     label_count = dict()
 
     def mkdir_if_not_exist(path):
@@ -159,9 +158,9 @@ def train(net, train_data, valid_data, num_epochs, batch_size, lr, wd, lr_period
             train_acc += utils.accuracy(output, label)
             # break
         cur_time = datetime.datetime.now()
-        # h, remainder = divmod((cur_time - prev_time).seconds, 3600)
-        # m, s = divmod(remainder, 60)
-        time_str = ('Time: ', cur_time - prev_time)
+        h, remainder = divmod((cur_time - prev_time).seconds, 3600)
+        m, s = divmod(remainder, 60)
+        time_str = "Time %02d:%02d:%02d" % (h, m, s)
         if valid_data is not None:
             valid_acc = utils.evaluate_accuracy(valid_data, net, ctx)
             epoch_str = ("Epoch %d. Loss: %f, Train acc %f, Valid acc %f, "
