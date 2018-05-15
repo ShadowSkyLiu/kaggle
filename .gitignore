@@ -1,4 +1,5 @@
 .idea/*
 CIFAR10_mxnet/*
 data/*
+CIFAR-10-ObjRecognition/.idea/*
 
