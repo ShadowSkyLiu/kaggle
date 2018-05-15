@@ -156,7 +156,6 @@ def train(net, train_data, valid_data, num_epochs, batch_size, lr, wd, lr_period
 
             train_loss += nd.mean(loss).asscalar()
             train_acc += utils.accuracy(output, label)
-            # break
         cur_time = datetime.datetime.now()
         h, remainder = divmod((cur_time - prev_time).seconds, 3600)
         m, s = divmod(remainder, 60)
