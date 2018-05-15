@@ -15,7 +15,7 @@ def evaluate_accuracy(data_iter, net, ctx=[mx.cpu()]):
         data, label, batch_size = _get_batch(batch, ctx)
         for X, y in zip(data, label):
             y = y.astype('float32')
-            acc += nd.sum(net(X).argmax(axis=1) == y).copyto(mx.cpu())
+            acc += nd.sum(net(X).argmax(axis=1) == y).copyto(ctx)
             n += y.size
         acc.wait_to_read()  # don't push too many operators into backend
     return acc.asscalar() / n
